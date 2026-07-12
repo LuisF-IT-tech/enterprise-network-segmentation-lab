@@ -44,14 +44,14 @@ The goal is to improve network security, organization, and scalability by separa
 # Project Status
 
 - [x] Create GitHub repository
-- [ ] Document existing network
-- [ ] Design network topology
-- [ ] Configure VLANs
-- [ ] Configure switch ports
-- [ ] Configure wireless SSIDs
+- [x] Document existing network
+- [x] Design network topology
+- [x] Configure VLAN interfaces
+- [x] Configure wireless SSIDs
+- [ ] Complete switch port migration
 - [ ] Configure firewall rules
 - [ ] Test network isolation
-- [ ] Complete documentation
+- [ ] Complete final documentation
 
 ---
 
