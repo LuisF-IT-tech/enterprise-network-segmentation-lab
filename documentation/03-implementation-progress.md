@@ -189,6 +189,34 @@ After the change:
 - IoT devices remained connected.
 - Guest wireless devices retained Internet access.
 - DHCP continued to assign addresses from the correct VLAN scopes.
+---
+
+## Cross-VLAN EAP Management Access
+
+After the main PC was migrated to the Trusted Home VLAN 20, the EAP610 at `192.168.10.2` continued responding to ICMP ping but its web-management interface could not be opened.
+
+Because the AP still responded to ping, the VLAN trunk and inter-VLAN routing path were confirmed to be working. The issue was isolated to the EAP610 management-access settings rather than a VLAN or routing failure.
+
+### Root Cause
+
+Access MAC Management was enabled on the EAP610 and contained a specific Ethernet MAC address.
+
+When the PC was directly connected to the Management VLAN, the AP could see the PC's Ethernet MAC address and permit access.
+
+After the PC moved to VLAN 20, management traffic crossed the ER605 router before reaching the AP. The AP no longer saw the PC's original Layer 2 MAC address, causing the web-management request to be denied even though ICMP traffic still succeeded.
+
+Layer-3 accessibility was also required to allow web-management connections from a different IP subnet.
+
+### Resolution
+
+The following changes were made on the EAP610:
+
+- Disabled Access MAC Management
+- Enabled Layer-3 Accessibility
+- Confirmed HTTPS management remained enabled
+- Left the EAP Management VLAN feature disabled
+
+The EAP Management VLAN feature was intentionally left disabled because switch port 2 already places the AP's untagged management traffic into VLAN 10 using:
 
 ---
 
