@@ -335,3 +335,100 @@ The rule worked as expected. Guest devices can reach the Internet, but they cann
 I learned that the `!VLAN40` destination means “any network except VLAN 40.”
 
 Because the rule direction is LAN to LAN, it does not block Internet traffic. It only blocks traffic from the Guest VLAN to other internal networks.
+---
+
+## Firewall Rules and VLAN Isolation
+
+After confirming that DHCP, Internet access, and VLAN assignments were working, I started adding access-control rules on the ER605.
+
+I created the rules under:
+
+`Firewall > Access Control`
+
+### Guest Network Rule
+
+I wanted Guest VLAN 40 to have Internet access without being able to reach anything on my internal network.
+
+I created this rule:
+
+- Name: `GUEST_BLOCK_INTERNAL`
+- Policy: Block
+- Service: All
+- Direction: LAN to LAN
+- Source: VLAN 40
+- Destination: Any LAN network except VLAN 40
+- Effective time: Any
+
+The destination setting uses `!VLAN40`.
+
+The exclamation mark means “not,” so the rule blocks VLAN 40 from reaching any other local VLAN.
+
+Because the direction is LAN to LAN, Internet traffic is not blocked.
+
+### Guest Rule Testing
+
+I connected a phone to the Guest wireless network and disabled cellular data.
+
+I confirmed:
+
+- The phone received a `192.168.40.x` address.
+- Internet access continued working.
+- VLAN 10 Management was unreachable.
+- VLAN 20 Home was unreachable.
+- VLAN 30 IoT was unreachable.
+- VLAN 50 Production was unreachable.
+
+### IoT Network Rule
+
+I originally started creating separate rules to block IoT VLAN 30 from each internal VLAN.
+
+I later realized that one broader rule was simpler:
+
+- Name: `IOT_BLOCK_INTERNAL`
+- Policy: Block
+- Service: All
+- Direction: LAN to LAN
+- Source: VLAN 30
+- Destination: Any LAN network except VLAN 30
+- Effective time: Any
+
+This prevents IoT devices from initiating connections to other internal VLANs while preserving Internet access.
+
+### IoT Rule Testing
+
+I tested the rule using devices connected to the IoT wireless network.
+
+I confirmed:
+
+- IoT devices continued receiving `192.168.30.x` addresses.
+- The smart TV retained Internet access.
+- The Ring camera remained online.
+- VLAN 10 Management was unreachable.
+- VLAN 20 Home was unreachable.
+- VLAN 40 Guest was unreachable.
+- VLAN 50 Production was unreachable.
+
+### What I Learned
+
+I learned that creating VLANs does not automatically isolate them.
+
+The ER605 can route traffic between VLANs unless access-control rules are added.
+
+I also learned:
+
+- `!VLAN30` means every LAN network except VLAN 30.
+- LAN-to-LAN rules do not block Internet traffic.
+- A single broad isolation rule can be easier to manage than several individual rules.
+- Same-VLAN traffic normally stays on the switch or access point and does not pass through the router.
+- Rule design should be planned before adding multiple overlapping entries.
+
+### Rules Still Pending
+
+The following rules will be completed later:
+
+- Block Home VLAN 20 from Management VLAN 10.
+- Restrict access to Production VLAN 50 after services are deployed.
+- Permit only required traffic to AdGuard Home.
+- Review and remove old or redundant access-control rules.
+
+The Home-to-Management block is being saved until the end because my main PC is still being used to manage the router, switch, and access point.
