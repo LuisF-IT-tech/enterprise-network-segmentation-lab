@@ -301,3 +301,37 @@ The next phase will:
 6. Create least-privilege inter-VLAN firewall rules.
 7. Test allowed and denied traffic flows.
 8. Remove obsolete configuration after validation.
+## Isolating the Guest Network
+
+I created an access-control rule to stop devices on VLAN 40 from reaching the rest of my internal network.
+
+The rule blocks traffic from VLAN 40 to any other LAN network, but it still allows devices to reach the Internet because the rule only applies to LAN-to-LAN traffic.
+
+### Rule used
+
+- Source: VLAN 40
+- Destination: Any LAN network except VLAN 40
+- Direction: LAN to LAN
+- Action: Block
+- Service: All
+
+### Testing
+
+I connected my phone to the Guest Wi-Fi and turned off cellular data so I could make sure the test was only using Wi-Fi.
+
+The phone received a `192.168.40.x` address and could still browse the Internet.
+
+I also tested access to the other VLANs and confirmed that the Guest network could not reach:
+
+- Management VLAN 10
+- Home VLAN 20
+- IoT VLAN 30
+- Production VLAN 50
+
+The rule worked as expected. Guest devices can reach the Internet, but they cannot reach devices on my internal network.
+
+### What I learned
+
+I learned that the `!VLAN40` destination means “any network except VLAN 40.”
+
+Because the rule direction is LAN to LAN, it does not block Internet traffic. It only blocks traffic from the Guest VLAN to other internal networks.
