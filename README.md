@@ -45,13 +45,20 @@ The goal is to improve network security, organization, and scalability by separa
 
 - [x] Create GitHub repository
 - [x] Document existing network
-- [x] Design network topology
-- [x] Configure VLAN interfaces
-- [x] Configure wireless SSIDs
-- [ ] Complete switch port migration
-- [ ] Configure firewall rules
-- [ ] Test network isolation
-- [ ] Complete final documentation
+- [x] Design VLAN architecture
+- [x] Create VLAN interfaces and DHCP scopes
+- [x] Configure 802.1Q switch VLANs
+- [x] Configure trunk and access ports
+- [x] Configure wireless VLANs
+- [x] Migrate wired devices
+- [x] Create DHCP reservations
+- [x] Isolate Guest VLAN
+- [x] Isolate IoT VLAN
+- [ ] Deploy Production services
+- [ ] Complete Production VLAN firewall rules
+- [ ] Block Home VLAN from Management VLAN
+- [ ] Complete final validation
+- [ ] Finish project documentation
 
 ---
 
